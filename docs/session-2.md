@@ -17,7 +17,7 @@ Session 2 introduces you to the visual world of Flutter development. You'll lear
 
 1. **From Code to Screen** - Understanding Flutter project structure and widget tree
 2. **Building Static UI** - Hands-on creation of a digital business card
-3. **Homework Assignment** - Social media post card project
+3. **Homework Task** - Social media post card project
 
 ## ✅ Learning Outcomes
 
@@ -61,7 +61,7 @@ By the end of Session 2, you'll be able to:
 
 **Goal**: Reinforce concepts through practical assignment
 
-**Assignment**: Social Media Post Card
+**Task**: Social Media Post Card
 
 - Create a static UI resembling a social media post
 - Include user avatar, username, content, and action icons
