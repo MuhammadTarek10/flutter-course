@@ -114,10 +114,6 @@ flutter doctor
 - **Android Studio** with Flutter plugin
 - **IntelliJ IDEA** with Flutter plugin
 
-### 3. Start Learning
-
-📖 **[View Course Sessions →](docs/sessions.md)**
-
 ## 📈 Career Opportunities
 
 ### Mobile Development Roles
