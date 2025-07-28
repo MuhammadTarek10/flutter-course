@@ -13,7 +13,7 @@
 
 ---
 
-## **Module 1: The "Why" - Introducing State (45 minutes)**
+## **Module 1: The "Why" - Introducing State**
 
 **Goal:** Explain why `StatelessWidget` has limitations and introduce the concept of state in a simple, non-technical way.
 
@@ -31,7 +31,7 @@
 
 ---
 
-## **Module 2: Building a Stateful App (1 hour 30 minutes)**
+## **Module 2: Building a Stateful App**
 
 **Goal:** Put theory into practice by building two simple, fun, and interactive stateful apps from scratch.
 
@@ -57,7 +57,7 @@
 
 ---
 
-## **Module 3: Homework & What's Next (15 minutes)**
+## **Module 3: Homework & What's Next**
 
 ### 🚀 The Simple Quiz App
 
