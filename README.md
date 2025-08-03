@@ -64,8 +64,8 @@ Our learning journey follows a progressive approach:
 ### Phase 2: Intermediate (Sessions 4-6)
 
 - **Navigation & Routing** - Multi-screen applications
-- **API Integration** - Backend connectivity
 - **Local Storage** - Data persistence
+- **API Integration** - Backend connectivity
 
 ### Phase 3: Advanced (Sessions 7-9)
 

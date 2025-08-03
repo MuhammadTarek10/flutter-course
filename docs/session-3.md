@@ -35,7 +35,7 @@
 
 **Goal:** Put theory into practice by building two simple, fun, and interactive stateful apps from scratch.
 
-**(0:45 - 1:30) | Live Coding Pt. 1: The Classic Counter**
+**Live Coding Pt. 1: The Classic Counter**
 
 - **Action:** Build the standard Flutter counter app to demonstrate the core loop: User Action -> `setState()` -> Rebuild.
 - **Steps:**
@@ -45,7 +45,7 @@
   4.  Add a button (like `FloatingActionButton` or `ElevatedButton`) with an `onPressed` property.
   5.  Inside `onPressed`, call `setState()` to update the counter.
 
-**(1:30 - 2:15) | Live Coding Pt. 2: The Dice Roller**
+**Live Coding Pt. 2: The Dice Roller**
 
 - **Action:** Build a more visual app to solidify the concept.
 - **Steps:**

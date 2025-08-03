@@ -1,4 +1,4 @@
 *.DS_Store
-dart/**/solution/
-flutter/**/solution/
+dart/**/solutions/
+flutter/**/solutions/
 
