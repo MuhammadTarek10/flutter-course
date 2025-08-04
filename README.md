@@ -61,23 +61,15 @@ Our learning journey follows a progressive approach:
 - **Flutter Basics** - Widgets and UI components
 - **State Management** - Data flow and app state
 
-### Phase 2: Intermediate (Sessions 4-6)
+### Phase 2: Intermediate (Sessions 4-8)
 
 - **Navigation & Routing** - Multi-screen applications
 - **Local Storage** - Data persistence
 - **API Integration** - Backend connectivity
 
-### Phase 3: Advanced (Sessions 7-9)
-
-- **Advanced UI** - Custom widgets and animations
-- **Testing** - Unit and widget testing
-- **Deployment** - App store publishing
-
-### Phase 4: Real-World (Sessions 10-12)
+### Phase 3: Real-World (Sessions 9~)
 
 - **Project Portfolio** - Complete applications
-- **Performance Optimization** - App efficiency
-- **Industry Best Practices** - Professional development
 
 ## 🛠️ Prerequisites
 
