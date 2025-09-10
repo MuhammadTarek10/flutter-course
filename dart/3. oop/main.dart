@@ -18,32 +18,6 @@ class Car {
   }
 }
 
-class Shape {
-int width;
-int length;
-
-Shape(this.width, this.length);
-
-int getArea(){
-return this.width*this.length;
-}
-}
-
-class Circle extends Shape {
-int r1;
-
-Circle(this.r1): super(r1, r1);
-
-@override
-double getArea() {
-return 3.14 * this.r1;
-}
-
-
-}
-
-final x = Cricle(1)
-
 void main() {
   Car bmw = Car("BMW", "M3", 250.24);
   Car nissan = Car("Nissan", "N5", 220.12);
