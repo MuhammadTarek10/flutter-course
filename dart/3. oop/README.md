@@ -139,26 +139,66 @@ class Book {
     this.dueDate,
   });
 
+  // Named constructor for quick book creation
+  Book.quick(this.title, this.author, this.isbn)
+    : category = 'General',
+      publicationYear = DateTime.now().year,
+      isAvailable = true;
 
   // Methods
   void borrowBook(String borrowerName) {
+    if (!isAvailable) {
+      print('❌ Book "$title" is already borrowed!');
+      return;
+    }
+
+    isAvailable = false;
+    borrowedBy = borrowerName;
+    borrowDate = DateTime.now();
+    dueDate = DateTime.now().add(Duration(days: 14)); // 2 weeks loan
+
+    print('✅ Book "$title" borrowed by $borrowerName');
+    print('   Due date: ${dueDate!.day}/${dueDate!.month}/${dueDate!.year}');
   }
 
   void returnBook() {
+    if (isAvailable) {
+      print('❌ Book "$title" is not currently borrowed!');
+      return;
+    }
+
+    String previousBorrower = borrowedBy!;
+    isAvailable = true;
+    borrowedBy = null;
+    borrowDate = null;
+    dueDate = null;
+
+    print('✅ Book "$title" returned by $previousBorrower');
   }
 
   bool isOverdue() {
+    if (isAvailable || dueDate == null) return false;
+    return DateTime.now().isAfter(dueDate!);
   }
 
   int daysUntilDue() {
+    if (isAvailable || dueDate == null) return 0;
+    return dueDate!.difference(DateTime.now()).inDays;
   }
 
   @override
   String toString() {
+    String status = isAvailable ? '📗 Available' : '📕 Borrowed';
+    String borrowInfo = isAvailable ? '' : ' (by $borrowedBy)';
+    return '$status "$title" by $author [$category, $publicationYear]$borrowInfo';
   }
 
   @override
   bool operator ==(Object other) {
+    if (other is Book) {
+      return isbn == other.isbn;
+    }
+    return false;
   }
 
   @override
@@ -186,9 +226,12 @@ class LibraryMember {
        borrowingHistory = [];
 
   void addBorrowedBook(String bookTitle) {
+    borrowedBooks.add(bookTitle);
+    borrowingHistory.add(bookTitle);
   }
 
   void removeBorrowedBook(String bookTitle) {
+    borrowedBooks.remove(bookTitle);
   }
 
   int get totalBooksRead => borrowingHistory.length;
@@ -196,6 +239,7 @@ class LibraryMember {
 
   @override
   String toString() {
+    return '👤 $name (ID: $memberId) - Member since ${memberSince.year}';
   }
 }
 ```
@@ -217,59 +261,229 @@ class Library {
 
   // Book management methods
   void addBook(Book book) {
+    // Check if book already exists
+    if (books.contains(book)) {
+      print('⚠️ Book with ISBN ${book.isbn} already exists!');
+      return;
+    }
+
+    books.add(book);
+    print('✅ Added "${book.title}" to the library');
   }
 
   void removeBook(String isbn) {
+    Book? bookToRemove = findBookByISBN(isbn);
+    if (bookToRemove == null) {
+      print('❌ Book with ISBN $isbn not found!');
+      return;
+    }
+
+    if (!bookToRemove.isAvailable) {
+      print('❌ Cannot remove "${bookToRemove.title}" - currently borrowed!');
+      return;
+    }
+
+    books.remove(bookToRemove);
+    print('✅ Removed "${bookToRemove.title}" from the library');
   }
 
   // Search methods
   Book? findBookByISBN(String isbn) {
+    for (Book book in books) {
+      if (book.isbn == isbn) return book;
+    }
+    return null;
   }
 
   List<Book> findBooksByTitle(String title) {
+    List<Book> results = [];
+    String lowerTitle = title.toLowerCase();
+
+    for (Book book in books) {
+      if (book.title.toLowerCase().contains(lowerTitle)) {
+        results.add(book);
+      }
+    }
+
+    return results;
   }
 
   List<Book> findBooksByAuthor(String author) {
+    List<Book> results = [];
+    String lowerAuthor = author.toLowerCase();
+
+    for (Book book in books) {
+      if (book.author.toLowerCase().contains(lowerAuthor)) {
+        results.add(book);
+      }
+    }
+
+    return results;
   }
 
   List<Book> findBooksByCategory(String category) {
+    List<Book> results = [];
+    String lowerCategory = category.toLowerCase();
+
+    for (Book book in books) {
+      if (book.category.toLowerCase() == lowerCategory) {
+        results.add(book);
+      }
+    }
+
+    return results;
   }
 
   List<Book> getAvailableBooks() {
+    List<Book> available = [];
+    for (Book book in books) {
+      if (book.isAvailable) available.add(book);
+    }
+    return available;
   }
 
   List<Book> getBorrowedBooks() {
+    List<Book> borrowed = [];
+    for (Book book in books) {
+      if (!book.isAvailable) borrowed.add(book);
+    }
+    return borrowed;
   }
 
   List<Book> getOverdueBooks() {
+    List<Book> overdue = [];
+    for (Book book in books) {
+      if (book.isOverdue()) overdue.add(book);
+    }
+    return overdue;
   }
 
   // Member management
   void addMember(LibraryMember member) {
+    // Check if member ID already exists
+    for (LibraryMember existingMember in members) {
+      if (existingMember.memberId == member.memberId) {
+        print('⚠️ Member with ID ${member.memberId} already exists!');
+        return;
+      }
+    }
+
+    members.add(member);
+    print('✅ Added member: ${member.name}');
   }
 
   LibraryMember? findMemberById(String memberId) {
+    for (LibraryMember member in members) {
+      if (member.memberId == memberId) return member;
+    }
+    return null;
   }
 
   // Borrowing operations
   void borrowBook(String isbn, String memberId) {
+    Book? book = findBookByISBN(isbn);
+    LibraryMember? member = findMemberById(memberId);
+
+    if (book == null) {
+      print('❌ Book with ISBN $isbn not found!');
+      return;
+    }
+
+    if (member == null) {
+      print('❌ Member with ID $memberId not found!');
+      return;
+    }
+
+    if (member.currentlyBorrowed >= 5) {
+      print('❌ ${member.name} has reached the borrowing limit (5 books)!');
+      return;
+    }
+
+    book.borrowBook(member.name);
+    if (!book.isAvailable) {
+      member.addBorrowedBook(book.title);
+      borrowingRecords[isbn] = memberId;
+    }
   }
 
   void returnBook(String isbn) {
+    Book? book = findBookByISBN(isbn);
+
+    if (book == null) {
+      print('❌ Book with ISBN $isbn not found!');
+      return;
+    }
+
+    if (book.isAvailable) {
+      print('❌ Book "${book.title}" is not currently borrowed!');
+      return;
+    }
+
+    String? memberId = borrowingRecords[isbn];
+    if (memberId != null) {
+      LibraryMember? member = findMemberById(memberId);
+      if (member != null) {
+        member.removeBorrowedBook(book.title);
+      }
+      borrowingRecords.remove(isbn);
+    }
+
+    book.returnBook();
   }
 
   // Statistics and reporting
   void displayStatistics() {
+    print('\n📊 Library Statistics for "$name"');
+    print('   📍 Location: $address');
+    print('   📚 Total books: ${books.length}');
+    print('   📗 Available books: ${getAvailableBooks().length}');
+    print('   📕 Borrowed books: ${getBorrowedBooks().length}');
+    print('   ⏰ Overdue books: ${getOverdueBooks().length}');
+    print('   👥 Total members: ${members.length}');
+
+    // Category breakdown
+    Map<String, int> categoryCount = {};
+    for (Book book in books) {
+      categoryCount[book.category] = (categoryCount[book.category] ?? 0) + 1;
+    }
+
+    print('\n   📂 Books by category:');
+    for (String category in categoryCount.keys) {
+      print('      $category: ${categoryCount[category]}');
+    }
   }
 
   void displayOverdueBooks() {
+    List<Book> overdueBooks = getOverdueBooks();
+
+    if (overdueBooks.isEmpty) {
+      print('✅ No overdue books!');
+      return;
+    }
+
+    print('\n⏰ Overdue Books:');
+    for (Book book in overdueBooks) {
+      int daysOverdue = DateTime.now().difference(book.dueDate!).inDays;
+      print('   📕 "${book.title}" by ${book.borrowedBy} ($daysOverdue days overdue)');
+    }
   }
 
   void displayMemberActivity() {
+    print('\n👥 Member Activity:');
+    for (LibraryMember member in members) {
+      print('   ${member.toString()}');
+      print('      Currently borrowed: ${member.currentlyBorrowed} books');
+      print('      Total books read: ${member.totalBooksRead} books');
+      if (member.borrowedBooks.isNotEmpty) {
+        print('      Current books: ${member.borrowedBooks.join(", ")}');
+      }
+      print('');
+    }
   }
 
   @override
   String toString() {
+    return '🏛️ $name Library ($address) - ${books.length} books, ${members.length} members';
   }
 }
 ```
@@ -501,3 +715,46 @@ Once you complete the basic system, try these enhancements:
 
 3. **Experiment**: Try adding your own books, members, and operations
 
+## ✅ Self-Assessment Checklist
+
+Before moving to the next workshop, ensure you can:
+
+- [ ] Create classes with properties and methods
+- [ ] Implement various constructor types (positional, named, factory)
+- [ ] Use the `this` keyword correctly
+- [ ] Override methods like `toString()` and `operator ==`
+- [ ] Create and manage object relationships
+- [ ] Apply encapsulation principles
+- [ ] Handle object interactions and dependencies
+- [ ] Design classes that model real-world entities
+
+## 🎯 Key Takeaways
+
+1. **Classes** define the blueprint for objects
+2. **Constructors** initialize object state
+3. **Methods** define object behavior
+4. **Encapsulation** protects and organizes data
+5. **Override** customizes inherited behavior
+6. **Object relationships** model real-world interactions
+7. **Design patterns** solve common problems
+
+## 🔗 Next Steps
+
+Once you've mastered OOP concepts, you're ready for:
+
+- **Workshop 4**: Calculator Project (Integration of all concepts)
+- Applying OOP in larger applications
+- Advanced Dart features and patterns
+
+---
+
+### 💡 Pro Tips
+
+- **Single Responsibility**: Each class should have one main purpose
+- **Meaningful Names**: Use descriptive names for classes, methods, and properties
+- **Constructor Convenience**: Use named constructors for different creation patterns
+- **Method Organization**: Group related functionality together
+- **Error Handling**: Always validate inputs and handle edge cases
+- **Documentation**: Use comments to explain complex logic
+
+**Happy Coding! 🎉**
